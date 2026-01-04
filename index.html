@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Guarida de Rewkun - Supreme</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --danger: #ff4757;
+            --bg: #050505;
+            --card-bg: #121212;
+            --text: #ffffff;
+            --neon: #00ff00;
+        }
+
+        body.light-mode {
+            --bg: #f1f2f6;
+            --card-bg: #ffffff;
+            --text: #2f3542;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
+
+        body { background-color: var(--bg); color: var(--text); transition: 0.3s; overflow-x: hidden; }
+
+        header {
+            background: linear-gradient(135deg, #000, #1e1e2e);
+            padding: 40px;
+            text-align: center;
+            border-bottom: 4px solid var(--primary);
+            box-shadow: 0 5px 20px rgba(108, 92, 231, 0.3);
+        }
+
+        .theme-switch { position: fixed; top: 20px; right: 20px; z-index: 2000; }
+        .btn-theme { padding: 12px 20px; border-radius: 30px; border: none; cursor: pointer; background: var(--primary); color: white; font-weight: bold; box-shadow: 0 0 15px var(--primary); }
+
+        .container { max-width: 1400px; margin: auto; padding: 20px; }
+
+        /* NOTICIAS - SLIDER REPARADO */
+        .news-slider {
+            position: relative;
+            width: 100%;
+            height: 550px;
+            border-radius: 25px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            border: 2px solid var(--primary);
+        }
+
+        .slides { display: flex; width: 600%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slide { width: 16.666%; height: 100%; position: relative; }
+        
+        /* Imagen específica solicitada */
+        .img-maduro { 
+            background: url('https://pbs.twimg.com/media/FfS-8EAWAAAnm5i?format=jpg&name=large'); 
+            background-size: cover; 
+            background-position: center;
+        }
+        
+        .slide img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); }
+        .slide-overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; background: linear-gradient(transparent, rgba(0,0,0,0.9)); display: flex; flex-direction: column; justify-content: flex-end; padding: 50px; }
+        .slide-tag { background: var(--danger); width: fit-content; padding: 5px 15px; border-radius: 5px; margin-bottom: 15px; font-weight: bold; }
+
+        /* PUNTOS */
+        .dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; }
+        .dot { width: 14px; height: 14px; background: rgba(255,255,255,0.2); border-radius: 50%; cursor: pointer; transition: 0.3s; }
+        .dot.active { background: var(--primary); width: 30px; border-radius: 10px; }
+
+        /* GRID PRINCIPAL */
+        .main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; }
+        .card { background: var(--card-bg); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); height: 100%; }
+
+        /* CALCULADORA REPARADA */
+        #calc-screen { width: 100%; background: #000; color: var(--neon); border: 2px solid var(--primary); padding: 20px; text-align: right; font-size: 2rem; border-radius: 10px; margin-bottom: 15px; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .calc-grid button { padding: 20px; border-radius: 12px; border: none; background: #252525; color: white; font-size: 1.3rem; cursor: pointer; transition: 0.2s; }
+        .calc-grid button:hover { background: var(--primary); }
+
+        /* BUSCAMINAS */
+        #minesweeper { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; width: 320px; margin: 20px auto; }
+        .cell { width: 35px; height: 35px; background: #333; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 4px; font-weight: bold; }
+        .cell.revealed { background: #555; }
+        .cell.mine { background: var(--danger); }
+
+        /* CLICKER JUEGO */
+        .clicker-box { text-align: center; padding: 20px; }
+        #click-btn { width: 120px; height: 120px; border-radius: 50%; border: none; background: var(--primary); color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 0 20px var(--primary); transition: 0.1s; }
+        #click-btn:active { transform: scale(0.9); }
+
+        /* FOOTER */
+        footer { margin-top: 50px; padding: 40px; background: #000; text-align: center; border-top: 1px solid var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div class="theme-switch">
+        <button class="btn-theme" onclick="toggleTheme()">🌓 MODO REWKUN</button>
+    </div>
+
+    <header>
+        <h1 style="letter-spacing: 5px;">🏰 LA GUARIDA DE REWKUN</h1>
+        <p id="clock" style="font-size: 1.2rem; color: var(--secondary); margin-top: 10px;"></p>
+    </header>
+
+    <div class="container">
+        
+        <div class="news-slider">
+            <div class="slides" id="slider">
+                <div class="slide img-maduro">
+                    <div class="slide-overlay">
+                        <span class="slide-tag">WORLD NEWS</span>
+                        <h1>Caída de Maduro: Encuentro Histórico</h1>
+                        <p>Imágenes confirman la transición. "Acuerdo de paz firmado con mediación internacional".</p>
+                    </div>
+                </div>
+                <div class="slide"><img src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=1470&q=80"><div class="slide-overlay"><h1>Bitcoin alcanza nuevo máximo histórico</h1></div></div>
+                <div class="slide"><img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1470&q=80"><div class="slide-overlay"><h1>Rewkun domina el desarrollo web 2026</h1></div></div>
+                <div class="slide"><img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1470&q=80"><div class="slide-overlay"><h1>Nueva era espacial: Estación en Marte</h1></div></div>
+                <div class="slide"><img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1470&q=80"><div class="slide-overlay"><h1>Ciberseguridad: Blindaje total</h1></div></div>
+                <div class="slide"><img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1470&q=80"><div class="slide-overlay"><h1>Música: IA crea hit mundial</h1></div></div>
+            </div>
+            <div class="dots">
+                <div class="dot active" onclick="moveSlide(0)"></div>
+                <div class="dot" onclick="moveSlide(1)"></div>
+                <div class="dot" onclick="moveSlide(2)"></div>
+                <div class="dot" onclick="moveSlide(3)"></div>
+                <div class="dot" onclick="moveSlide(4)"></div>
+                <div class="dot" onclick="moveSlide(5)"></div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="card">
+                <h3>🧮 CALCULADORA SUPREME</h3>
+                <input type="text" id="calc-screen" disabled placeholder="0">
+                <div class="calc-grid">
+                    <button onclick="clearC()">C</button><button onclick="press('/')">/</button><button onclick="press('*')">x</button><button onclick="press('-')">-</button>
+                    <button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button><button onclick="press('+')">+</button>
+                    <button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button><button onclick="solve()" style="background:var(--primary); grid-row: span 2;">=</button>
+                    <button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
+                    <button onclick="press('0')" style="grid-column: span 3;">0</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💣 BUSCAMINAS REWKUN</h3>
+                <p>Evita las bombas ocultas.</p>
+                <div id="minesweeper"></div>
+                <button onclick="initMines()" style="width:100%; padding:10px; background:var(--danger); border:none; border-radius:10px; color:white; font-weight:bold; cursor:pointer;">Reiniciar Juego</button>
+            </div>
+
+            <div class="card">
+                <h3>⚡ CLICKER DE PODER</h3>
+                <div class="clicker-box">
+                    <h2 id="score">Poder: 0</h2>
+                    <button id="click-btn" onclick="addPower()">TAP!</button>
+                    <p style="margin-top: 15px;">¿Qué tan rápido puedes clickear?</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>✨ MOTIVACIÓN DIARIA</h3>
+                <p id="phrase" style="font-size: 1.5rem; text-align: center; margin: 30px 0;">"El poder está en tus manos, Rewkun."</p>
+                <button onclick="newPhrase()" style="width:100%; padding:10px; background:var(--primary); border:none; border-radius:10px; color:white; cursor:pointer;">Otra Frase</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>LA GUARIDA DE REWKUN v5.0 - 2026 | Sistema Operativo Web</p>
+    </footer>
+
+    <script>
+        // MODO LUZ/OSCURO
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+
+        // RELOJ
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleString();
+        }, 1000);
+
+        // SLIDER
+        let current = 0;
+        function moveSlide(i) {
+            current = i;
+            document.getElementById('slider').style.transform = `translateX(-${i * 16.666}%)`;
+            let dots = document.querySelectorAll('.dot');
+            dots.forEach(d => d.classList.remove('active'));
+            dots[i].classList.add('active');
+        }
+        setInterval(() => { current = (current + 1) % 6; moveSlide(current); }, 6000);
+
+        // CALCULADORA
+        let scr = document.getElementById('calc-screen');
+        function press(v) { scr.value += v; }
+        function clearC() { scr.value = ''; }
+        function solve() { try { scr.value = eval(scr.value); } catch { scr.value = 'Error'; } }
+
+        // BUSCAMINAS LÓGICA
+        function initMines() {
+            const container = document.getElementById('minesweeper');
+            container.innerHTML = '';
+            for(let i=0; i<64; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.onclick = function() {
+                    if(Math.random() < 0.15) {
+                        this.classList.add('mine'); this.innerText = '💣';
+                        alert('¡BOOM! Perdiste, Rewkun.'); initMines();
+                    } else {
+                        this.classList.add('revealed'); this.innerText = '✔️';
+                    }
+                };
+                container.appendChild(cell);
+            }
+        }
+        initMines();
+
+        // CLICKER LÓGICA
+        let power = 0;
+        function addPower() {
+            power++;
+            document.getElementById('score').innerText = "Poder: " + power;
+        }
+
+        // FRASES
+        const frases = ["Rewkun es el rey de esta guarida.", "El éxito es opcional, la victoria es obligatoria.", "Crea el futuro hoy mismo.", "Nada es imposible para un dev."];
+        function newPhrase() {
+            document.getElementById('phrase').innerText = frases[Math.floor(Math.random()*frases.length)];
+        }
+    </script>
+</body>
+</html>
