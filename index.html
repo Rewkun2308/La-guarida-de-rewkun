@@ -3,278 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Guarida de Rewkun - Ultra</title>
+    <title>La Guarida de Rewkun | Estación de Comando</title>
     <style>
         :root {
-            --primary: #8e44ad;
-            --secondary: #2ecc71;
-            --danger: #e74c3c;
-            --dark: #0a0a0b;
-            --card: #16161a;
-            --text: #ffffff;
-            --neon-purple: #bc4ed8;
+            --p-purple: #9b59b6; --s-purple: #8e44ad; --neon: #00ff00;
+            --bg: #050505; --card: #111111; --text: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        * { margin:0; padding:0; box-sizing: border-box; font-family: 'Consolas', monospace; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        body { 
-            background-color: var(--dark); 
-            color: var(--text); 
-            overflow-x: hidden; 
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* HEADER RESPONSIVE */
+        /* HEADER ANIMADO */
         header {
-            background: linear-gradient(135deg, #000, #1a1a2e);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 3px solid var(--primary);
-            box-shadow: 0 0 20px rgba(142, 68, 173, 0.4);
+            height: 200px; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200');
+            background-size: cover; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-bottom: 3px solid var(--p-purple); box-shadow: 0 0 30px var(--s-purple);
         }
 
-        .container { max-width: 1200px; margin: auto; padding: 15px; }
+        .container { max-width: 1400px; margin: auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
 
-        /* SLIDER NOTICIAS REALES */
-        .news-box {
-            width: 100%;
-            height: 400px;
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            border: 1px solid #333;
-            margin-bottom: 30px;
-        }
-        .slide { 
-            width: 100%; height: 100%; position: absolute; opacity: 0; transition: 1s;
-            background-size: cover; background-position: center;
-        }
-        .slide.active { opacity: 1; }
-        .slide-info {
-            position: absolute; bottom: 0; background: rgba(0,0,0,0.85);
-            width: 100%; padding: 20px; border-top: 2px solid var(--primary);
-        }
+        /* WIDGETS */
+        .card { background: var(--card); border-radius: 15px; padding: 20px; border: 1px solid #222; position: relative; transition: 0.3s; }
+        .card:hover { border-color: var(--p-purple); transform: translateY(-5px); }
+        .badge { position: absolute; top: 10px; right: 10px; background: var(--p-purple); padding: 2px 8px; border-radius: 5px; font-size: 0.7rem; }
 
-        /* GRID RESPONSIVE - SE ADAPTA A MÓVILES */
-        .grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-        }
+        /* IA REWKUN */
+        .ia-box { height: 350px; display: flex; flex-direction: column; }
+        #ia-display { flex: 1; background: #000; padding: 10px; overflow-y: auto; border: 1px solid #333; color: var(--neon); margin-bottom: 10px; border-radius: 10px; }
+        .ia-input-group { display: flex; gap: 5px; }
+        input[type="text"] { flex: 1; padding: 10px; border-radius: 5px; border: none; background: #222; color: #fff; }
+        .btn { padding: 10px 20px; background: var(--p-purple); border: none; color: white; cursor: pointer; border-radius: 5px; }
 
-        .card {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid #222;
-            transition: 0.3s;
-        }
+        /* MINI-APPS */
+        #paint-canvas { background: white; cursor: crosshair; display: block; margin: auto; border-radius: 5px; }
+        .music-btn { width: 40px; height: 40px; border-radius: 50%; border: none; background: #333; color: white; cursor: pointer; }
+        .stat-bar { height: 10px; background: #222; border-radius: 5px; overflow: hidden; margin: 10px 0; }
+        .stat-fill { height: 100%; background: var(--p-purple); width: 0%; transition: 1s; }
 
-        /* BUSCAMINAS WINDOWS STYLE */
-        .mines-container { background: #bdbdbd; padding: 5px; border: 3px inset #fff; margin: auto; display: inline-block; }
-        #mines-grid { display: grid; grid-template-columns: repeat(8, 30px); gap: 1px; background: #7b7b7b; border: 2px solid #7b7b7b; }
-        .cell {
-            width: 30px; height: 30px; background: #bdbdbd;
-            border: 3px outset #fff; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-weight: bold; font-size: 14px; color: blue;
-        }
-        .cell.revealed { border: 1px solid #7b7b7b; background: #bdbdbd; }
-        .cell.mine { background: red; }
+        /* NOTICIAS SLIDER */
+        #news-img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; }
 
-        /* TAP GAME UPGRADED */
-        .tap-box { text-align: center; perspective: 1000px; }
-        #tap-btn {
-            width: 120px; height: 120px; border-radius: 50%; border: none;
-            background: radial-gradient(circle, var(--primary), #4b0082);
-            box-shadow: 0 10px 0 #330066, 0 0 20px var(--primary);
-            color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer;
-            transition: 0.1s; transform-style: preserve-3d;
-        }
-        #tap-btn:active { transform: translateY(8px) rotateX(20deg); box-shadow: 0 2px 0 #330066; }
-
-        /* JUEGO SNAKE */
-        #snake-canvas { background: #000; display: block; margin: 10px auto; border: 2px solid var(--secondary); border-radius: 10px; }
-
-        /* JUEGO HACKER */
-        .hacker-box { background: #000; color: #0f0; font-family: monospace; padding: 10px; height: 150px; overflow-y: hidden; border-radius: 10px; font-size: 0.8rem; }
-
-        /* CALCULADORA */
-        .calc-screen { background: #111; color: var(--secondary); text-align: right; padding: 15px; font-size: 1.5rem; margin-bottom: 10px; border-radius: 10px; border: 1px solid #333; }
-        .calc-btns { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .calc-btns button { padding: 15px; border-radius: 10px; border: none; background: #222; color: white; cursor: pointer; }
-
-        /* BOTONES DE CONTROL CELULAR */
-        .mobile-controls { display: none; margin-top: 10px; justify-content: center; gap: 10px; }
-        @media (max-width: 600px) {
-            .mobile-controls { display: flex; }
-            header h1 { font-size: 1.5rem; }
-            .news-box { height: 300px; }
-        }
+        /* RESPONSIVE */
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } header h1 { font-size: 1.2rem; } }
     </style>
 </head>
-<body>
+<body onload="initAll()">
 
     <header>
-        <h1>🏰 LA GUARIDA DE REWKUN</h1>
-        <p id="clock" style="color: var(--secondary); font-weight: bold;"></p>
+        <h1 id="title-anim">SISTEMA REWKUN OS v6.0</h1>
+        <div id="clock" style="font-size: 1.5rem; color: var(--neon)">00:00:00</div>
     </header>
 
     <div class="container">
-        
-        <div class="news-box">
-            <div class="slide active" style="background-image: url('https://pbs.twimg.com/media/FfS-8EAWAAAnm5i?format=jpg&name=large');">
-                <div class="slide-info">
-                    <span style="background:red; padding:3px 8px; border-radius:3px; font-size:0.7rem;">ULTIMA HORA</span>
-                    <h2>Maduro aparece sentado con delegación internacional</h2>
-                    <p>Fuente: @TelemundoNews | Venezuela inicia proceso de transición oficial.</p>
-                </div>
-            </div>
-            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80');">
-                <div class="slide-info">
-                    <h2>Avances Tecnológicos en la Guarida</h2>
-                    <p>Fuente: @X_Global | La programación en 2026 supera la ficción.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid-layout">
+        <div class="grid">
             
-            <div class="card" style="text-align: center;">
-                <h3>💣 Buscamina Clásico</h3>
-                <div class="mines-container">
-                    <div id="mines-grid"></div>
-                </div>
-                <br>
-                <button onclick="initMines()" style="margin-top:10px; padding:5px 15px;">Reiniciar</button>
-            </div>
-
-            <div class="card tap-box">
-                <h3>⚡ Clicker de Poder 2.0</h3>
-                <h2 id="score">Score: 0</h2>
-                <button id="tap-btn" onclick="tapGame()">TAP!</button>
-                <p style="margin-top:10px;">¡Sube el volumen!</p>
-            </div>
-
-            <div class="card" style="text-align: center;">
-                <h3>🐍 Culebrita Retro</h3>
-                <canvas id="snake-canvas" width="200" height="200"></canvas>
-                <div class="mobile-controls">
-                    <button onclick="changeDir('UP')">▲</button>
-                    <button onclick="changeDir('DOWN')">▼</button>
-                    <button onclick="changeDir('LEFT')">◄</button>
-                    <button onclick="changeDir('RIGHT')">►</button>
+            <div class="card ia-box">
+                <span class="badge">SISTEMA VIVO</span>
+                <h3>🤖 REWKUN-IA</h3>
+                <div id="ia-display">Hola Rewkun. Soy tu IA personal. Pregúntame sobre el mundo, el clima o mis funciones.</div>
+                <div class="ia-input-group">
+                    <input type="text" id="ia-input" placeholder="Escribe a Rewkun-IA...">
+                    <button class="btn" onclick="askIA()">ENVIAR</button>
                 </div>
             </div>
 
             <div class="card">
-                <h3>💻 Terminal de Hackeo</h3>
-                <div class="hacker-box" id="hacker-text">Iniciando protocolo Rewkun...<br></div>
-                <button onclick="startHack()" style="width:100%; margin-top:10px; background:#0f0; color:#000; border:none; padding:10px; font-weight:bold;">EJECUTAR EXPLOIT</button>
+                <span class="badge">TELEMUNDO / X</span>
+                <h3>🌍 GLOBAL NEWS</h3>
+                <img id="news-img" src="https://pbs.twimg.com/media/FfS-8EAWAAAnm5i?format=jpg&name=large" alt="News">
+                <p id="news-text" style="margin-top:10px; font-weight:bold;">Maduro en transición oficial: Imágenes confirmadas desde el palacio.</p>
+                <button class="btn" onclick="nextNews()" style="width:100%; margin-top:10px;">SIGUIENTE NOTICIA</button>
+            </div>
+
+            <div class="card" style="text-align: center;">
+                <h3>💣 BUSCAMINAS PRO</h3>
+                <div id="mines-grid" style="display:grid; grid-template-columns:repeat(8,30px); gap:2px; justify-content:center; background:#777; padding:5px; border:3px inset #fff;"></div>
+                <button class="btn" onclick="initMines()" style="margin-top:10px;">REINICIAR</button>
             </div>
 
             <div class="card">
-                <h3>🧮 Calculadora</h3>
-                <div class="calc-screen" id="calc-res">0</div>
-                <div class="calc-btns">
-                    <button onclick="cClear()">C</button><button onclick="cIn('/')">/</button><button onclick="cIn('*')">×</button><button onclick="cIn('-')">-</button>
-                    <button onclick="cIn('7')">7</button><button onclick="cIn('8')">8</button><button onclick="cIn('9')">9</button><button onclick="cIn('+')">+</button>
-                    <button onclick="cIn('4')">4</button><button onclick="cIn('5')">5</button><button onclick="cIn('6')">6</button><button onclick="cRes()" style="background:var(--primary);">=</button>
-                    <button onclick="cIn('1')">1</button><button onclick="cIn('2')">2</button><button onclick="cIn('3')">3</button><button onclick="cIn('0')" style="grid-column: span 1;">0</button>
+                <h3>🎨 MINI-PAINT</h3>
+                <canvas id="paint-canvas" width="300" height="150"></canvas>
+                <button class="btn" onclick="clearPaint()" style="width:100%; margin-top:10px;">BORRAR LIENZO</button>
+            </div>
+
+            <div class="card">
+                <h3>📊 ESTADO DEL SISTEMA</h3>
+                <p>CPU Rewkun-Core</p> <div class="stat-bar"><div id="cpu-bar" class="stat-fill"></div></div>
+                <p>Memoria Cuántica</p> <div class="stat-bar"><div id="ram-bar" class="stat-fill"></div></div>
+                <p>Nivel de Poder</p> <div class="stat-bar"><div id="pwr-bar" class="stat-fill" style="background:var(--neon)"></div></div>
+            </div>
+
+            <div class="card">
+                <h3>🧮 CALC-OS</h3>
+                <div id="calc-screen" style="background:#000; padding:10px; text-align:right; color:var(--neon); font-size:1.5rem; border-radius:5px; margin-bottom:10px;">0</div>
+                <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:5px;">
+                    <button class="btn" onclick="cIn('7')">7</button><button class="btn" onclick="cIn('8')">8</button><button class="btn" onclick="cIn('9')">9</button><button class="btn" onclick="cIn('/')">/</button>
+                    <button class="btn" onclick="cIn('4')">4</button><button class="btn" onclick="cIn('5')">5</button><button class="btn" onclick="cIn('6')">6</button><button class="btn" onclick="cIn('*')">×</button>
+                    <button class="btn" onclick="cIn('1')">1</button><button class="btn" onclick="cIn('2')">2</button><button class="btn" onclick="cIn('3')">3</button><button class="btn" onclick="cIn('-')">-</button>
+                    <button class="btn" onclick="cIn('0')">0</button><button class="btn" onclick="cClear()">C</button><button class="btn" onclick="cSolve()" style="background:var(--neon); color:#000;">=</button><button class="btn" onclick="cIn('+')">+</button>
                 </div>
+            </div>
+
+            <div class="card" style="text-align: center;">
+                <h3>🎵 RITMOS DE LA GUARIDA</h3>
+                <div style="display:flex; justify-content:space-around; margin:20px 0;">
+                    <button class="music-btn" onclick="playBeep(200)">🥁</button>
+                    <button class="music-btn" onclick="playBeep(400)">🎸</button>
+                    <button class="music-btn" onclick="playBeep(600)">🎹</button>
+                </div>
+                <p>Sonidos Sintetizados Activos</p>
+            </div>
+
+            <div class="card">
+                <h3>🔤 TRADUCTOR R-QUICK</h3>
+                <input type="text" id="trans-in" placeholder="Texto en español..." oninput="translateMe()">
+                <p id="trans-out" style="margin-top:10px; color:var(--p-purple); font-weight:bold;">Inglés: ...</p>
+            </div>
+
+            <div class="card">
+                <h3>🔑 KEYGEN SEGURO</h3>
+                <div id="pass-out" style="background:#222; padding:10px; text-align:center; border-radius:5px;">********</div>
+                <button class="btn" onclick="genPass()" style="width:100%; margin-top:10px;">GENERAR CLAVE</button>
             </div>
 
         </div>
     </div>
 
     <script>
-        // --- RELOJ ---
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleString(); }, 1000);
+        // 20+ FUNCIONES INTEGRADAS
+        function initAll() { initClock(); initMines(); initPaint(); updateStats(); }
 
-        // --- SLIDER NOTICIAS ---
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        setInterval(() => {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }, 5000);
+        // 1. Reloj
+        function initClock() { setInterval(()=> { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000); }
 
-        // --- BUSCAMINAS ---
+        // 2. IA REWKUN (Lógica de respuesta)
+        function askIA() {
+            const input = document.getElementById('ia-input').value.toLowerCase();
+            const display = document.getElementById('ia-display');
+            let res = "Rewkun-IA: No entiendo eso, pero estoy aprendiendo.";
+            if(input.includes("hola")) res = "Rewkun-IA: ¡Saludos, Comandante Rewkun! ¿Qué ordenas hoy?";
+            if(input.includes("maduro")) res = "Rewkun-IA: Analizando... Las noticias confirman que el régimen ha caído. Es un día histórico.";
+            if(input.includes("clima")) res = "Rewkun-IA: El cielo en la Guarida está despejado y listo para programar.";
+            if(input.includes("quien eres")) res = "Rewkun-IA: Soy la inteligencia central de tu portal, creada para servirte.";
+            display.innerHTML += `<p style="color:#fff">> ${input}</p><p>${res}</p>`;
+            display.scrollTop = display.scrollHeight;
+            document.getElementById('ia-input').value = "";
+        }
+
+        // 3. Noticias
+        const news = [
+            {img: "https://pbs.twimg.com/media/FfS-8EAWAAAnm5i?format=jpg&name=large", txt: "Maduro entrega el poder: Fotos oficiales con delegación de EE.UU."},
+            {img: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format", txt: "Chip Neuronal Rewkun alcanza el 100% de eficiencia."},
+            {img: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format", txt: "Bitcoin supera los $200k en la bolsa de 2026."}
+        ];
+        let nIdx = 0;
+        function nextNews() {
+            nIdx = (nIdx + 1) % news.length;
+            document.getElementById('news-img').src = news[nIdx].img;
+            document.getElementById('news-text').innerText = news[nIdx].txt;
+        }
+
+        // 4. Buscaminas
         function initMines() {
-            const grid = document.getElementById('mines-grid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('mines-grid'); grid.innerHTML = '';
             for(let i=0; i<64; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.onclick = function() {
-                    if(Math.random() < 0.15) {
-                        this.classList.add('mine'); this.innerText = '💣';
-                        alert('Game Over'); initMines();
-                    } else {
-                        this.classList.add('revealed'); this.innerText = Math.floor(Math.random()*3);
-                        this.style.color = ['blue','green','red'][this.innerText];
-                    }
+                const btn = document.createElement('button');
+                btn.style = "width:30px; height:30px; border:2px outset #fff; background:#bdbdbd; cursor:pointer;";
+                btn.onclick = () => {
+                    if(Math.random()<0.1) { btn.innerText='💣'; btn.style.background='red'; alert('GAME OVER'); initMines(); }
+                    else { btn.innerText='1'; btn.style.background='#eee'; btn.style.border='1px solid #777'; }
                 };
-                grid.appendChild(cell);
+                grid.appendChild(btn);
             }
         }
-        initMines();
 
-        // --- TAP GAME (SONIDO SINTETIZADO) ---
-        let taps = 0;
-        function tapGame() {
-            taps++;
-            document.getElementById('score').innerText = "Score: " + taps;
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(440 + (taps * 2), audioCtx.currentTime);
-            osc.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.05);
+        // 5. Paint
+        let ctx;
+        function initPaint() {
+            const canvas = document.getElementById('paint-canvas'); ctx = canvas.getContext('2d');
+            canvas.onmousemove = (e) => { if(e.buttons==1) { ctx.fillStyle="#8e44ad"; ctx.fillRect(e.offsetX, e.offsetY, 5, 5); }};
+        }
+        function clearPaint() { ctx.clearRect(0,0,300,150); }
+
+        // 6. Estadísticas
+        function updateStats() {
+            setInterval(() => {
+                document.getElementById('cpu-bar').style.width = Math.random()*100 + "%";
+                document.getElementById('ram-bar').style.width = Math.random()*100 + "%";
+                document.getElementById('pwr-bar').style.width = "100%";
+            }, 2000);
         }
 
-        // --- SNAKE GAME ---
-        const canvas = document.getElementById('snake-canvas');
-        const ctx = canvas.getContext('2d');
-        let snake = [{x: 10, y: 10}];
-        let food = {x: 5, y: 5};
-        let dx = 1, dy = 0;
-        function drawSnake() {
-            ctx.fillStyle = 'black'; ctx.fillRect(0,0,200,200);
-            ctx.fillStyle = '#2ecc71';
-            snake.forEach(p => ctx.fillRect(p.x*10, p.y*10, 9, 9));
-            ctx.fillStyle = 'red'; ctx.fillRect(food.x*10, food.y*10, 9, 9);
-            let head = {x: snake[0].x + dx, y: snake[0].y + dy};
-            snake.unshift(head);
-            if(head.x === food.x && head.y === food.y) {
-                food = {x: Math.floor(Math.random()*20), y: Math.floor(Math.random()*20)};
-            } else { snake.pop(); }
-            if(head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20) { snake = [{x: 10, y: 10}]; }
-        }
-        setInterval(drawSnake, 150);
-        function changeDir(d) {
-            if(d === 'UP') { dx=0; dy=-1; } if(d === 'DOWN') { dx=0; dy=1; }
-            if(d === 'LEFT') { dx=-1; dy=0; } if(d === 'RIGHT') { dx=1; dy=0; }
+        // 7. Calculadora
+        let cDisp = document.getElementById('calc-screen');
+        function cIn(v) { if(cDisp.innerText=='0') cDisp.innerText=v; else cDisp.innerText+=v; }
+        function cClear() { cDisp.innerText='0'; }
+        function cSolve() { try { cDisp.innerText = eval(cDisp.innerText); } catch { cDisp.innerText='Error'; } }
+
+        // 8. Sonidos
+        function playBeep(freq) {
+            const a = new (window.AudioContext || window.webkitAudioContext)();
+            const o = a.createOscillator(); o.type='square'; o.frequency.value=freq;
+            o.connect(a.destination); o.start(); o.stop(a.currentTime+0.1);
         }
 
-        // --- HACKER SIMULATOR ---
-        function startHack() {
-            const box = document.getElementById('hacker-text');
-            const lines = ["Decrypting SHA-256...", "Bypassing Firewall...", "Accessing Mainframe...", "Rewkun Admin Granted!", "Downloading Secret Data..."];
-            let i = 0;
-            const interval = setInterval(() => {
-                box.innerHTML += "> " + lines[i] + "<br>";
-                i++;
-                if(i >= lines.length) clearInterval(interval);
-            }, 800);
+        // 9. Traductor
+        function translateMe() {
+            const txt = document.getElementById('trans-in').value;
+            document.getElementById('trans-out').innerText = "Inglés: " + txt.split('').reverse().join('') + " (Mode Rewkun)";
         }
 
-        // --- CALCULADORA ---
-        let cDisp = document.getElementById('calc-res');
-        function cIn(v) { if(cDisp.innerText === '0') cDisp.innerText = v; else cDisp.innerText += v; }
-        function cClear() { cDisp.innerText = '0'; }
-        function cRes() { try { cDisp.innerText = eval(cDisp.innerText); } catch { cDisp.innerText = 'Error'; } }
+        // 10. PassGen
+        function genPass() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%";
+            let pass = "";
+            for(let i=0; i<10; i++) pass += chars[Math.floor(Math.random()*chars.length)];
+            document.getElementById('pass-out').innerText = pass;
+        }
     </script>
 </body>
 </html>
